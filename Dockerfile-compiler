@@ -1,0 +1,5 @@
+FROM alpine:latest
+RUN apk add --no-cache gcc libc-dev
+COPY hello.c /hello.c
+RUN gcc -static -o /hello /hello.c
+CMD ["/hello"]
