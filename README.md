@@ -1,42 +1,50 @@
 
-# Introduction
+# Docker Small Images
 
 Files to generate the lesser possible docker image.
 
-Tamanho: 76.48 Kb
+"Hello World" size: 42.82 Kb
+"Small Server" size: 60.54
 
-# Setup
+## Setup
 
-To generate image, first compile the `hello.c` file, to do this, build an image using `Dockerfile-compiler` file.
+There is three Dockerfile in this repos:
 
-Next create a container from generated image.
+- **Dockerfile-compiler**: It can be used to compile a .c file, if you want to get compiled file for any reason.
+- **Dockerfile-hello**: Simple "hello world" printer on command line.
+- **Dockerfile-server**: Start a http server to response `GET /` requests with a simple `{"success": true}`.
 
-Then, copy file from container to local machine.
+Dockerfile-compiler is compiling `hello.c` file, to compile `server.c` file, change it.
 
-At last, build an image using the `Dockerfile` file.
+Files compiled can be used to build images faster, if is your intention, use `Dockerfile-compiler` to create executable files, then create a `Dockerfile` like this:
+
+```dockerfile
+FROM scratch
+ADD hello /
+CMD ["/hello"]
+```
+
+To build and run images, use commands as bellow.
 
 **Commands:**
 
 ```bash
-# Build image using Dockerfile-compiler
-docker build -f Dockerfile-compiler -t my-compiler .
-# Create extract-hello container
-docker create --name extract-hello my-compiler
-# Copy the "hello" file from container
-docker cp extract-hello:/hello ./hello
-# Remove extract-hello container
-docker rm extract-hello
-# And compiler image
-docker image rm my-compiler:latest
-# Build image usign Dockerfile
-docker build -t lesser-image .
-# To test, run the image with "rm" parameter*
-docker run --rm lesser-image
+# Hello
+docker build -t small-image -f Dockerfile-hello .
+docker run --rm --name small-image small-image
+# Server
+docker build -t small-image -f Dockerfile-server .
+docker run --rm -p 8080:8080 --name small-image small-image
+# Copy files
+docker build -t extract-file -f Dockerfile-compiler
+docker create --name extract-file extract-file
+docker cp extract-file:/server ./server
+docker rm extract-file
 ```
 
 \* _The rm parameter is used to remove the container after its execution._
 
-# AWS ECR
+## AWS ECR
 
 To send image to AWS ECR, install aws cli, login to ECR and use build/push commands, as per the following example.
 
@@ -49,7 +57,7 @@ docker build -t aws_account_id.dkr.ecr.region.amazonaws.com/my-repository:latest
 docker push aws_account_id.dkr.ecr.region.amazonaws.com/my-repository:latest
 ```
 
-# Azure ACR
+## Azure ACR
 
 To send image to Azure ACR, install azure cli, login to ACR and use build/push commands, as per the following example.
 
@@ -62,7 +70,7 @@ docker build -t acr-name.azurecr.io/image-name:latest .
 docker push acr-name.azurecr.io/image-name:latest
 ```
 
-# References
+## References
 
 - [Docker Scratch Image][docker-scratch]
 - [Docker Alpine Image][docker-alpine]
