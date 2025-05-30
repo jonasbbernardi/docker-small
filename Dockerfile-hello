@@ -1,0 +1,8 @@
+FROM alpine:latest AS builder
+RUN apk add --no-cache gcc libc-dev
+COPY hello.c /hello.c
+RUN gcc -static -o /hello /hello.c
+
+FROM scratch
+COPY --from=builder /hello /hello
+CMD ["/hello"]

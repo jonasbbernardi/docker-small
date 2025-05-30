@@ -1,0 +1,8 @@
+FROM alpine:latest AS builder
+RUN apk add --no-cache gcc libc-dev
+COPY server.c /server.c
+RUN gcc -static -o /server /server.c
+
+FROM scratch
+COPY --from=builder /server /server
+CMD ["/server"]
