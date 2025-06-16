@@ -52,7 +52,7 @@ To send image to AWS ECR, install aws cli, login to ECR and use build/push comma
 # Log in docker to ECR
 aws ecr get-login-password --region region | docker login --username AWS --password-stdin aws_account_id.dkr.ecr.region.amazonaws.com
 # Build image with tag latest pointing to ECR
-docker build -t aws_account_id.dkr.ecr.region.amazonaws.com/my-repository:latest .
+docker build -t aws_account_id.dkr.ecr.region.amazonaws.com/my-repository:latest -f Dockerfile-xxx .
 # Publish image with latest tag
 docker push aws_account_id.dkr.ecr.region.amazonaws.com/my-repository:latest
 ```
@@ -65,7 +65,7 @@ To send image to Azure ACR, install azure cli, login to ACR and use build/push c
 # Log in docker to ACR
 az acr login --name acr-name
 # Build image with tag latest pointing to ACR
-docker build -t acr-name.azurecr.io/image-name:latest .
+docker build -t acr-name.azurecr.io/image-name:latest -f Dockerfile-xxx .
 # Publish image with latest tag
 docker push acr-name.azurecr.io/image-name:latest
 ```
